@@ -55,7 +55,7 @@ jobs:
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
           CI: true
-          IMAGE_NAME: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/my-nestjs-app:latest
+          IMAGE_NAME: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$IMAGE_TAG
         run: |
           echo "Deploying Render service with image $IMAGE_NAME"
           render deploys create ${{ secrets.RENDER_SERVICE_ID }} --image $IMAGE_NAME --output json --confirm
