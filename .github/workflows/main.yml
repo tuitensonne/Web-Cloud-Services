@@ -31,17 +31,4 @@ jobs:
 
       - name: Run tests
         run: npm test
-
-  deploy:
-      name: Deploy to Render
-      needs: [build-test-docker]
-      runs-on: ubuntu-latest
-  
-      steps:
-        - name: Deploy Service
-          uses: JorgeLNJunior/render-deploy@v1.4.6
-          with:
-            service_id: ${{ secrets.RENDER_SERVICE_ID }}
-            api_key: ${{ secrets.RENDER_API_KEY }}
-            wait_deploy: true
  
