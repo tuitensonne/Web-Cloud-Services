@@ -29,11 +29,12 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --only=production
 
+# Copy prisma schema and generate client in runner stage
+COPY --from=builder /app/prisma ./prisma
+RUN npx prisma generate
+
 # Copy build artifacts
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/node_modules/.prisma/client ./node_modules/.prisma/client
 
 EXPOSE 3000
 CMD ["node", "dist/main.js"]
