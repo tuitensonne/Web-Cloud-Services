@@ -34,9 +34,10 @@ export class UsersController {
     description: 'User successfully created',
     schema: {
       example: {
-        id: 1,
-        name: 'John Doe',
+        ID: 1,
         email: 'john@example.com',
+        username: 'johndoe',
+        password: 'hashedPassword123',
       },
     },
   })
@@ -46,7 +47,7 @@ export class UsersController {
       example: {
         statusCode: 400,
         message: 'Validation failed',
-        errors: ['email must be an email'],
+        errors: ['email must be an email', 'email already exists'],
         timestamp: '2025-01-01T10:00:00.000Z',
         path: '/users',
       },
@@ -62,8 +63,18 @@ export class UsersController {
     description: 'Return an array of all users',
     schema: {
       example: [
-        { id: 1, name: 'John Doe', email: 'john@example.com' },
-        { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
+        {
+          ID: 1,
+          email: 'john@example.com',
+          username: 'johndoe',
+          password: 'hashedPassword123',
+        },
+        {
+          ID: 2,
+          email: 'jane@example.com',
+          username: 'janesmith',
+          password: 'hashedPassword456',
+        },
       ],
     },
   })
@@ -101,9 +112,10 @@ export class UsersController {
     description: 'Return a single user',
     schema: {
       example: {
-        id: 1,
-        name: 'John Doe',
+        ID: 1,
         email: 'john@example.com',
+        username: 'johndoe',
+        password: 'hashedPassword123',
       },
     },
   })
@@ -128,6 +140,14 @@ export class UsersController {
   @ApiBody({ type: UpdateUserDto })
   @ApiOkResponse({
     description: 'User updated successfully',
+    schema: {
+      example: {
+        ID: 1,
+        email: 'john.updated@example.com',
+        username: 'johndoe_updated',
+        password: 'hashedPassword123',
+      },
+    },
   })
   @ApiNotFoundResponse({
     description: 'User not found',
@@ -141,6 +161,18 @@ export class UsersController {
       },
     },
   })
+  @ApiBadRequestResponse({
+    description: 'Validation Error',
+    schema: {
+      example: {
+        statusCode: 400,
+        message: 'Validation failed',
+        errors: ['email must be an email', 'email already exists'],
+        timestamp: '2025-01-01T10:00:00.000Z',
+        path: '/users/1',
+      },
+    },
+  })
   update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateUserDto) {
     return this.usersService.update(id, data);
   }
@@ -149,6 +181,11 @@ export class UsersController {
   @Delete(':id')
   @ApiOkResponse({
     description: 'User removed successfully',
+    schema: {
+      example: {
+        message: 'User removed successfully',
+      },
+    },
   })
   @ApiNotFoundResponse({
     description: 'User not found',

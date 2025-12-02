@@ -1,41 +1,73 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from 'generated/prisma/client';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async create(data: CreateUserDto): Promise<User> {
-    const user = this.usersRepository.create(data);
-    return this.usersRepository.save(user);
+    try {
+      const user = await this.prisma.user.create({
+        data,
+      });
+      return user;
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new ConflictException('Email already exists');
+      }
+      throw error;
+    }
   }
 
-
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async findAll(): Promise<User[]> {
+    return this.prisma.user.findMany();
   }
 
   async findOne(id: number): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { id } });
-    if (!user) throw new NotFoundException('User not found');
+    const user = await this.prisma.user.findUnique({
+      where: { ID: id },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     return user;
   }
 
   async update(id: number, data: UpdateUserDto): Promise<User> {
-    const user = await this.findOne(id);
-    Object.assign(user, data);
-    return this.usersRepository.save(user);
+    try {
+      const user = await this.prisma.user.update({
+        where: { ID: id },
+        data,
+      });
+      return user;
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException('User not found');
+      }
+      if (error.code === 'P2002') {
+        throw new ConflictException('Email already exists');
+      }
+      throw error;
+    }
   }
 
   async remove(id: number): Promise<void> {
-    const user = await this.findOne(id);
-    await this.usersRepository.remove(user);
+    try {
+      await this.prisma.user.delete({
+        where: { ID: id },
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException('User not found');
+      }
+      throw error;
+    }
   }
 }
