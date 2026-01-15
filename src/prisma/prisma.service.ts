@@ -5,7 +5,7 @@ import { Pool } from 'pg';
 export class PrismaService extends PrismaClient {
     constructor() {
         const pool = new Pool({
-            connectionString: "postgresql://my_nestjs_app_user:ngDhkbcTQSTxR4IbFLvJckvc3uaUiUZj@dpg-d4n577ili9vc73fbevmg-a.singapore-postgres.render.com/my_nestjs_app?sslmode=require"
+            connectionString: "postgresql://last_database_user:Qi3m0tPH6bSlzxNIKQHbhY4DJboGRjvD@dpg-d5kddsemcj7s73d4gmq0-a.singapore-postgres.render.com/last_database?sslmode=require"
         });
         
         const adapter = new PrismaPg(pool);
