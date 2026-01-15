@@ -11,7 +11,7 @@ import { AppService } from './app.service';
     TypeOrmModule.forRoot({
       type: 'postgres',
       
-      url: "postgresql://my_nestjs_app_user:ngDhkbcTQSTxR4IbFLvJckvc3uaUiUZj@dpg-d4n577ili9vc73fbevmg-a.singapore-postgres.render.com/my_nestjs_app?sslmode=require",
+      url: "postgresql://last_database_user:Qi3m0tPH6bSlzxNIKQHbhY4DJboGRjvD@dpg-d5kddsemcj7s73d4gmq0-a.singapore-postgres.render.com/last_database?sslmode=require",
       entities: [User],
       synchronize: true, 
       ssl: { rejectUnauthorized: false }, 
